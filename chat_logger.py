@@ -9,12 +9,7 @@ load_dotenv()
 
 sock = socket.socket()
 
-logging.basicConfig(
-    level=logging.DEBUG,
-    format="%(asctime)s — %(message)s",
-    datefmt="%Y-%m-%d_%H:%M:%S",
-    handlers=[logging.FileHandler("chat.log", encoding="utf-8")],
-)
+logger = logging.getLogger("chat_volume_manager")
 
 server = "irc.chat.twitch.tv"
 port = 6667
@@ -24,6 +19,7 @@ channel = os.getenv("CHANNEL")
 
 
 def main():
+    logging.info("Chat logger has started.")
     sock = socket.socket()
     sock.connect((server, port))
     sock.send(f"PASS {token}\r\n".encode("utf-8"))
