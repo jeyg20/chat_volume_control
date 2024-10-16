@@ -1,1 +1,2 @@
-emoji==2.14.0
+emoji
+python-dotenv
