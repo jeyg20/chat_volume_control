@@ -37,36 +37,24 @@ def run_amixer(increment: str, duration: int):
 def get_chat_data(file):
     """Scan chat logs for specific patterns and trigger volume adjustments."""
     logging.info("Scanning chat")
-    patterns = [
-        (
-            re.compile(
-                r":(.*?)\!.*?@.*?\.tmi\.twitch\.tv PRIVMSG #(.*?) :(.*?)HORN 1000000"
-            ),
-            "HORN",
-        ),
-        (
-            re.compile(
-                r":(.*?)\!.*?@.*?\.tmi\.twitch\.tv PRIVMSG #(.*?) :(.*?)GIGAFART 1000000"
-            ),
-            "GIGAFART",
-        ),
-        (
-            re.compile(
-                r":(.*?)\!.*?@.*?\.tmi\.twitch\.tv PRIVMSG #(.*?) :(.*?)VIDEO TUBERIA 3000000"
-            ),
-            "TUBERIA",
-        ),
-    ]
+    pattern = re.compile(
+        r":(\w+)\!.*?@.*?\.tmi\.twitch\.tv PRIVMSG #(\w+) :(.*?)(HORN 1000000|GIGAFART 1000000|TUBERIA 3000000)"
+    )
 
     try:
         with open(file, "r", encoding="utf-8") as f:
             log_lines = tail_file(f)
             for line in log_lines:
-                for pattern, keyword in patterns:
-                    if pattern.search(line):
-                        logger.info("Match found for %s", keyword)
-                        run_amixer("2%", 5)
-                        run_amixer("10%", 5)
+                match = pattern.search(line)
+                if match:
+                    message_type = match.group(
+                        4
+                    )  # The specific message (HORN, GIGAFART, TUBERIA)
+                    logger.info(f"Match found for: {message_type} in {match.group(3)}")
+
+                    # Run the amixer task regardless of which message was found
+                    run_amixer("2%", 5)
+                    run_amixer("10%", 5)
     except FileNotFoundError:
         logging.error("The file %s was not found.", file)
     except Exception as e:
