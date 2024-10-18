@@ -12,7 +12,7 @@ logging.basicConfig(
     handlers=[
         logging.StreamHandler(),
         RotatingFileHandler(
-            "./chat.log", maxBytes=1024 * 1024, backupCount=1, encoding="utf-8"
+            "./logs/chat.log", maxBytes=1024 * 1024, backupCount=1, encoding="utf-8"
         ),
     ],
 )
