@@ -1,2 +1,3 @@
 emoji
 python-dotenv
+fastapi[standard]
