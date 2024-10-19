@@ -36,6 +36,7 @@ def main():
                 logging.info(demojize(resp))
 
     except KeyboardInterrupt:
+        logging.info("chat logger stopped.")
         sock.close()
         exit()
 

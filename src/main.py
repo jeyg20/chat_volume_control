@@ -10,7 +10,6 @@ logging.basicConfig(
     format="%(asctime)s — %(message)s",
     datefmt="%Y-%m-%d_%H:%M:%S",
     handlers=[
-        logging.StreamHandler(),
         RotatingFileHandler(
             "./logs/chat.log", maxBytes=1024 * 1024, backupCount=1, encoding="utf-8"
         ),
@@ -20,12 +19,15 @@ logging.basicConfig(
 logger = logging.getLogger("chat_volume_manager")
 
 
+stop_event = threading.Event()
+
+
 def run_chat_logger():
     chat_logger.main()
 
 
 def run_volume_manager():
-    log_file = "./chat.log"
+    log_file = "/home/jeison/dev/volume_control/logs/chat.log"
     get_chat_data(log_file)
 
 
@@ -37,9 +39,13 @@ def main():
 
     chat_logger_thread.start()
     volume_manager_thread.start()
-
-    chat_logger_thread.join()
-    volume_manager_thread.join()
+    try:
+        threading.Event().wait(1)
+    except KeyboardInterrupt:
+        logger.info("Stopping all tasks...")
+        chat_logger_thread.join()
+        volume_manager_thread.join()
+        logger.info("All tasks stopped.")
 
 
 if __name__ == "__main__":

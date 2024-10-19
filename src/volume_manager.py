@@ -1,6 +1,7 @@
 import logging
 import re
 import subprocess
+import threading
 import time
 
 logger = logging.getLogger("chat_volume_manager")
@@ -57,11 +58,11 @@ def get_chat_data(file):
                     run_amixer("10%", 5)
     except FileNotFoundError:
         logging.error("The file %s was not found.", file)
+    except KeyboardInterrupt:
+        logging.info("Volume manager stopped.")
+        exit()
     except Exception as e:
         logging.error("An unexpected error occurred: %s", e)
-
-    except KeyboardInterrupt:
-        exit()
 
 
 if __name__ == "__main__":
