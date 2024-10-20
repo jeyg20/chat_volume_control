@@ -64,7 +64,6 @@ for five seconds when triggered.
    const currentURL = window.location.href;
 
    if (currentURL.includes("twitch.tv/<TARGET_CHANNEL>")) {
-      console.log("in nmplol");
 
      fetch("http://localhost:80/in-stream", {
              method: 'GET',
